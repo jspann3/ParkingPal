@@ -12,6 +12,8 @@ namespace TCPServer
         public int[] colors { get; }
         public int maxSpaces { get; }
 
+        private List<Tag> tagList = new List<Tag>();
+
         public Lot(int ID, int[] Colors, int MaxSpaces)
         {
             id = ID;
@@ -19,6 +21,14 @@ namespace TCPServer
             maxSpaces = MaxSpaces;
         }
 
-        
+        public int GetTagListLength()
+        {
+            return tagList.Count;
+        }
+
+        public int SpacesLeft()
+        {
+            return maxSpaces - GetTagListLength();
+        }
     }
 }

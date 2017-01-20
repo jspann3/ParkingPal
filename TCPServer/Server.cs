@@ -19,6 +19,9 @@ namespace TCPServer
         private Socket serverSocket, clientSocket;
         private byte[] buffer;
         public static ManualResetEvent allDone = new ManualResetEvent(false);
+
+        
+
         public Server()
         {
             string path = @"C:\Users\BronzeMoss\Documents\visual studio 2015\Projects\SimpleAsyncSocket\SimpleAsyncSocket\bin\Debug\TCPClient.exe";

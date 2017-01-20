@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TCPServer
 {
-    class Tag
+    public class Tag
     {
         public int id { get; }
         public int color { get; }

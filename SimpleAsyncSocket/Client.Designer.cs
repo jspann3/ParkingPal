@@ -32,6 +32,8 @@
             this.btnSend = new System.Windows.Forms.Button();
             this.textBox = new System.Windows.Forms.TextBox();
             this.btnLot = new System.Windows.Forms.Button();
+            this.btnLot1 = new System.Windows.Forms.Button();
+            this.btnLot2 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnConnect
@@ -76,11 +78,33 @@
             this.btnLot.UseVisualStyleBackColor = true;
             this.btnLot.Click += new System.EventHandler(this.btnLot_Click);
             // 
+            // btnLot1
+            // 
+            this.btnLot1.Location = new System.Drawing.Point(13, 105);
+            this.btnLot1.Name = "btnLot1";
+            this.btnLot1.Size = new System.Drawing.Size(75, 23);
+            this.btnLot1.TabIndex = 4;
+            this.btnLot1.Text = "Lot 1";
+            this.btnLot1.UseVisualStyleBackColor = true;
+            this.btnLot1.Click += new System.EventHandler(this.btnLot1_Click);
+            // 
+            // btnLot2
+            // 
+            this.btnLot2.Location = new System.Drawing.Point(94, 105);
+            this.btnLot2.Name = "btnLot2";
+            this.btnLot2.Size = new System.Drawing.Size(75, 23);
+            this.btnLot2.TabIndex = 5;
+            this.btnLot2.Text = "Lot 2";
+            this.btnLot2.UseVisualStyleBackColor = true;
+            this.btnLot2.Click += new System.EventHandler(this.btnLot2_Click);
+            // 
             // Client
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(284, 261);
+            this.Controls.Add(this.btnLot2);
+            this.Controls.Add(this.btnLot1);
             this.Controls.Add(this.btnLot);
             this.Controls.Add(this.textBox);
             this.Controls.Add(this.btnSend);
@@ -98,6 +122,8 @@
         private System.Windows.Forms.Button btnSend;
         private System.Windows.Forms.TextBox textBox;
         private System.Windows.Forms.Button btnLot;
+        private System.Windows.Forms.Button btnLot1;
+        private System.Windows.Forms.Button btnLot2;
     }
 }
 

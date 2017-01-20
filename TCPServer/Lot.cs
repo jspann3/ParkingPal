@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TCPServer
 {
-    class Lot
+    public class Lot
     {
         public int id { get; }
         public int[] colors { get; }
@@ -29,6 +29,11 @@ namespace TCPServer
         public int SpacesLeft()
         {
             return maxSpaces - GetTagListLength();
+        }
+
+        public void AddTag(Tag t)
+        {
+            tagList.Add(t);
         }
     }
 }

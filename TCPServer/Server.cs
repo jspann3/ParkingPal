@@ -20,7 +20,9 @@ namespace TCPServer
         private byte[] buffer;
         public static ManualResetEvent allDone = new ManualResetEvent(false);
 
-        
+        // Testing Purposes
+        public Lot lot1 = new Lot(0, new int[] { 0 }, 25);
+        public Lot lot2 = new Lot(1, new int[] { 0, 1 }, 50);
 
         public Server()
         {
@@ -34,6 +36,8 @@ namespace TCPServer
         {
             try
             {
+                CreateTestLots();
+
                 serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                 serverSocket.Bind(new IPEndPoint(IPAddress.Any, 3333));
                 serverSocket.Listen(100);
@@ -94,6 +98,18 @@ namespace TCPServer
                     clientSocket.BeginSend(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback(SendCallback), null);
                 }
 
+                if (text == "<LOT1>")
+                {
+                    byte[] buffer = Encoding.ASCII.GetBytes(lot1.GetTagListLength().ToString());
+                    clientSocket.BeginSend(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback(SendCallback), null);
+                }
+
+                if (text == "<LOT2>")
+                {
+                    byte[] buffer = Encoding.ASCII.GetBytes(lot2.GetTagListLength().ToString());
+                    clientSocket.BeginSend(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback(SendCallback), null);
+                }
+
                 Console.WriteLine("Client says " + text);
                 AppendToTextBox("Client says: " + text);
                 Array.Resize(ref buffer, clientSocket.ReceiveBufferSize);
@@ -131,6 +147,31 @@ namespace TCPServer
                 });
 
             this.Invoke(invoker);
+        }
+
+        private void CreateTestLots()
+        {
+            for (int i = 0; i < 10; i++)
+            {
+                //add blue tags
+                lot1.AddTag(new Tag(i, 0));
+            }
+
+            //add red tag
+            lot1.AddTag(new Tag(10, 1));
+
+            for (int i = 0; i < 30; i++)
+            {
+                //add blue tags
+                if (i < 10)
+                    lot2.AddTag(new Tag(i, 0));
+                //add red tags
+                else if (i < 28)
+                    lot2.AddTag(new Tag(i, 1));
+                //add yellow tags
+                else
+                    lot2.AddTag(new Tag(i, 2));               
+            }
         }
     }
 }

@@ -20,6 +20,7 @@ namespace TCPServer
         private Socket serverSocket, clientSocket;
         private byte[] buffer;
         public static ManualResetEvent allDone = new ManualResetEvent(false);
+        public USBReader reader;
 
         // Testing Purposes
         public Lot lot1 = new Lot(0, new int[] { 0 }, 25);
@@ -37,6 +38,7 @@ namespace TCPServer
         {
             try
             {
+                reader = new USBReader();
                 CreateTestLots();
 
                 serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
@@ -95,7 +97,7 @@ namespace TCPServer
 
                 if (text == "<LOT>")
                 {
-                    byte[] buffer = Encoding.ASCII.GetBytes("Lot has been requested");
+                    byte[] buffer = Encoding.ASCII.GetBytes(reader.getEPC().Count.ToString());
                     clientSocket.BeginSend(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback(SendCallback), null);
                 }
 

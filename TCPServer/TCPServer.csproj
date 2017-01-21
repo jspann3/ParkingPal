@@ -50,7 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Lot.cs" />
-    <Compile Include="Reader.cs" />
+    <Compile Include="USBReader.cs" />
     <Compile Include="Server.cs">
       <SubType>Form</SubType>
     </Compile>

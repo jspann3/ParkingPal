@@ -1,19 +1,21 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using ThingMagic;
-using System.Collections;
 
 namespace TCPServer
 {
-    public class Reader
+    public class USBReader
     {
-        static ArrayList ids = new ArrayList();
-        static ArrayList dts = new ArrayList();
-        static ArrayList epc = new ArrayList();
-        public Reader()
+        public static ArrayList ids = new ArrayList();
+        public static ArrayList dts = new ArrayList();
+        public static ArrayList epc = new ArrayList();
+        public USBReader()
         {
             //Console.WriteLine(DateTime.Now.ToString("yyyy-MM-ddTHH:mm:sszzz"));
             Reader reader = create();
@@ -21,7 +23,11 @@ namespace TCPServer
             setROOP(reader);
             //filter(reader);
             asyncRead(reader);
+        }
 
+        public ArrayList getEPC()
+        {
+            return epc;
         }
 
         public ArrayList tagsInRange()
@@ -139,21 +145,6 @@ namespace TCPServer
         public void write(TagFilter tf, TagData td)
         {
             //td = 000000000000000000000001;
-        }
-
-        private void button_Click(object sender, RoutedEventArgs e)
-        {
-            Console.WriteLine("Tags in Reader's Range: ");
-            for (int i = 0; i < epc.Count; i++)
-            {
-                Console.WriteLine(epc[i]);
-            }
-            /*textBox.Text = "Tags in Reader's Range";
-            for (int i = 0; i < epc.Count; i++)
-            {
-                Console.WriteLine(epc.Count);
-                textBox.Text += epc[i].ToString();
-            }*/
         }
     }
 }

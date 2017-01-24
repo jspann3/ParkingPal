@@ -38,11 +38,10 @@ namespace TCPServer
         {
             try
             {
-                reader = new USBReader();
-                CreateTestLots();
+                //reader = new USBReader();
 
                 serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                serverSocket.Bind(new IPEndPoint(IPAddress.Any, 3333));
+                serverSocket.Bind(new IPEndPoint(IPAddress.Any, 3353));
                 serverSocket.Listen(100);
 
                 //while (true)
@@ -150,31 +149,6 @@ namespace TCPServer
                 });
 
             this.Invoke(invoker);
-        }
-
-        private void CreateTestLots()
-        {
-            for (int i = 0; i < 10; i++)
-            {
-                //add blue tags
-                lot1.AddTag(new Tag(i, 0));
-            }
-
-            //add red tag
-            lot1.AddTag(new Tag(10, 1));
-
-            for (int i = 0; i < 30; i++)
-            {
-                //add blue tags
-                if (i < 10)
-                    lot2.AddTag(new Tag(i, 0));
-                //add red tags
-                else if (i < 28)
-                    lot2.AddTag(new Tag(i, 1));
-                //add yellow tags
-                else
-                    lot2.AddTag(new Tag(i, 2));               
-            }
         }
     }
 }

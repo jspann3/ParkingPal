@@ -8,13 +8,15 @@ namespace TCPServer
 {
     public class Tag
     {
-        public int id { get; }
+        public string id { get; }
         public int color { get; }
+        public DateTime time { get; }
 
-        public Tag(int ID, int Color)
+        public Tag(string ID, int Color, DateTime Time)
         {
             id = ID;
-            Color = color;
+            color = Color;
+            time = Time;
         }
     }
 }

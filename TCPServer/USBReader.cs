@@ -87,6 +87,12 @@ namespace TCPServer
             string input = e.TagReadData.ToString();
             string id = input.Substring(4).Remove(24);
             string dt = input.Substring(48).Remove(23);
+
+            DateTime timeRead = new DateTime(Convert.ToInt32(dt.Substring(0, 4)), Convert.ToInt32(dt.Substring(5, 2)), Convert.ToInt32(dt.Substring(8, 2)), Convert.ToInt32(dt.Substring(11, 2)),
+                Convert.ToInt32(dt.Substring(14, 2)), Convert.ToInt32(dt.Substring(17, 2)), Convert.ToInt32(dt.Substring(20, 3)));
+
+            Tag tag = new Tag(id, 0, timeRead);
+
             string idANDdt = id + " " + dt;
 
             if (ids.Contains(id))

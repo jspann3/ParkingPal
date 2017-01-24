@@ -13,6 +13,7 @@ namespace TCPServer
         public int maxSpaces { get; }
 
         private List<Tag> tagList = new List<Tag>();
+        private List<Tag> removedTagList = new List<Tag>();
 
         public Lot(int ID, int[] Colors, int MaxSpaces)
         {
@@ -34,6 +35,33 @@ namespace TCPServer
         public void AddTag(Tag t)
         {
             tagList.Add(t);
+        }
+
+        public void TagRead(Tag tag)
+        {
+            bool addTag = true;
+            DateTime currentDateTime = DateTime.Now;
+            DateTime tagTime = new DateTime()
+
+            foreach (Tag t in tagList)
+            {
+                if (tag.id == t.id)     // tag is already in tagList
+                {
+                    addTag = false;
+                    TimeSpan ts = currentDateTime - currentDateTime;
+                }
+            }
+
+            foreach (Tag t in removedTagList)
+            {
+                if (tag.id == t.id)     // tag is already in removedTagList
+                {
+                    addTag = false;
+                }
+            }
+
+            if (addTag)
+                AddTag(tag);
         }
     }
 }

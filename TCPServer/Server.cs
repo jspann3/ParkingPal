@@ -20,11 +20,12 @@ namespace TCPServer
         private Socket serverSocket, clientSocket;
         private byte[] buffer;
         public static ManualResetEvent allDone = new ManualResetEvent(false);
-        public USBReader reader;
 
         // Testing Purposes
-        public Lot lot1 = new Lot(0, new int[] { 0 }, 25);
-        public Lot lot2 = new Lot(1, new int[] { 0, 1 }, 50);
+        //public Lot lot1 = new Lot(0, new int[] { 0 }, 25);
+        //public Lot lot2 = new Lot(1, new int[] { 0, 1 }, 50);
+
+        public Lot testLot;
 
         public Server()
         {
@@ -38,12 +39,10 @@ namespace TCPServer
         {
             try
             {
-                //reader = new USBReader();
-
                 serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                 serverSocket.Bind(new IPEndPoint(IPAddress.Any, 3353));
                 serverSocket.Listen(100);
-
+                testLot = new Lot(0, new int[] { 0 }, 35);
                 //while (true)
                 {
                     allDone.Reset();
@@ -94,23 +93,28 @@ namespace TCPServer
                     Application.Exit();
                 }
 
+                
                 if (text == "<LOT>")
                 {
-                    byte[] buffer = Encoding.ASCII.GetBytes(reader.getEPC().Count.ToString());
+                    byte[] buffer = Encoding.ASCII.GetBytes(testLot.GetTagListLength().ToString());
                     clientSocket.BeginSend(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback(SendCallback), null);
                 }
 
+                
                 if (text == "<LOT1>")
                 {
-                    byte[] buffer = Encoding.ASCII.GetBytes(lot1.GetTagListLength().ToString());
+                    //should happen based on a timer
+                    testLot.RemoveListCheck();
+
+                    byte[] buffer = Encoding.ASCII.GetBytes(testLot.GetRemovedTagListLength().ToString());
                     clientSocket.BeginSend(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback(SendCallback), null);
                 }
-
+                /*
                 if (text == "<LOT2>")
                 {
                     byte[] buffer = Encoding.ASCII.GetBytes(lot2.GetTagListLength().ToString());
                     clientSocket.BeginSend(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback(SendCallback), null);
-                }
+                }*/
 
                 Console.WriteLine("Client says " + text);
                 AppendToTextBox("Client says: " + text);

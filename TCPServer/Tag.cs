@@ -10,13 +10,13 @@ namespace TCPServer
     {
         public string id { get; }
         public int color { get; }
-        public DateTime time { get; }
+        public DateTime lastReadTime { get; }
 
         public Tag(string ID, int Color, DateTime Time)
         {
             id = ID;
             color = Color;
-            time = Time;
+            lastReadTime = Time;
         }
     }
 }

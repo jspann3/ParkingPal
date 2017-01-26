@@ -38,7 +38,7 @@ namespace SimpleAsyncSocket
             try
             {
                 clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                clientSocket.BeginConnect(new IPEndPoint(IPAddress.Parse("208.44.252.155"), 3353), new AsyncCallback(ConnectCallback), null);
+                clientSocket.BeginConnect(new IPEndPoint(IPAddress.Parse("208.44.252.155"), 3335), new AsyncCallback(ConnectCallback), null);
             }
             catch (Exception ex)
             {
@@ -48,6 +48,7 @@ namespace SimpleAsyncSocket
 
         private void ConnectCallback(IAsyncResult ar)
         {
+            int i = 0;
             try
             {
                 clientSocket.EndConnect(ar);

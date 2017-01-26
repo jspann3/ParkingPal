@@ -40,9 +40,9 @@ namespace TCPServer
             try
             {
                 serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                serverSocket.Bind(new IPEndPoint(IPAddress.Any, 3353));
+                serverSocket.Bind(new IPEndPoint(IPAddress.Any, 3335));
                 serverSocket.Listen(100);
-                testLot = new Lot(0, new int[] { 0 }, 35);
+                testLot = new Lot("12", new int[] { 0 }, 35);
                 //while (true)
                 {
                     allDone.Reset();
@@ -104,7 +104,14 @@ namespace TCPServer
                 if (text == "<LOT1>")
                 {
                     //should happen based on a timer
-                    testLot.RemoveListCheck();
+                    try
+                    {
+                        testLot.RemoveListCheck();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
 
                     byte[] buffer = Encoding.ASCII.GetBytes(testLot.GetRemovedTagListLength().ToString());
                     clientSocket.BeginSend(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback(SendCallback), null);

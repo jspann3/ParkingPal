@@ -12,6 +12,8 @@ namespace TCPServer
 {
     public class USBReader
     {
+        public Reader reader;
+
         public static ArrayList ids = new ArrayList();
         public static ArrayList dts = new ArrayList();
         public static ArrayList epc = new ArrayList();
@@ -21,7 +23,7 @@ namespace TCPServer
         public USBReader(Lot Lot)
         {
             lot = Lot;
-            Reader reader = create();
+            reader = create();
             connect(reader);
             setROOP(reader);
             //filter(reader);
@@ -85,6 +87,8 @@ namespace TCPServer
             Tag tag = new Tag(id, 0, timeRead);
             lot.TagRead(tag);
 
+            
+
             string idANDdt = id + " " + dt;
 
             if (ids.Contains(id))
@@ -110,20 +114,6 @@ namespace TCPServer
             tagCount.N = 10;
             StopTriggerReadPlan stopReadPlan = new StopTriggerReadPlan(tagCount);
             reader.ParamSet("/reader/read/plan", stopReadPlan);
-        }
-
-        public void filter(Reader reader)
-        {
-            TagProtocol protocol = TagProtocol.GEN2;
-            TagData tag = new TagData("000000000000000000000001");
-            SimpleReadPlan simplePlan = new SimpleReadPlan(null, protocol, tag, null, false, 1000);
-            reader.ParamSet("/reader/read/plan", simplePlan);
-
-        }
-
-        public void write(TagFilter tf, TagData td)
-        {
-            //td = 000000000000000000000001;
         }
     }
 }

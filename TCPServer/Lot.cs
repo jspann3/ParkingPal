@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
+using ThingMagic;
 
 namespace TCPServer
 {
     public class Lot
     {
-        public int id { get; }
+        public string id { get; }
         public int[] colors { get; }
         public int maxSpaces { get; }
 
@@ -17,7 +19,7 @@ namespace TCPServer
         private List<Tag> tagList = new List<Tag>();
         private List<Tag> removedTagList = new List<Tag>();
 
-        public Lot(int ID, int[] Colors, int MaxSpaces)
+        public Lot(string ID, int[] Colors, int MaxSpaces)
         {
             id = ID;
             colors = Colors;
@@ -40,9 +42,10 @@ namespace TCPServer
             return maxSpaces - GetTagListLength();
         }
 
-        public void AddTag(Tag t)
+        public void AddTag(Tag tag)
         {
-            tagList.Add(t);
+            tagList.Add(tag);
+            //Write(true, tag);
         }
 
         public void TagRead(Tag tag)
@@ -72,38 +75,44 @@ namespace TCPServer
             }
 
             foreach (Tag t in removedTagList)
-            {
                 if (tag.id == t.id)     // tag is already in removedTagList
-                {
                     addTag = false;
-                }
-            }
 
             if (addTag)
                 AddTag(tag);
 
             if (removeTag)
+            {
+                //Write(false,tagList[tagToRemoveIndex]);
                 tagList.Remove(tagList[tagToRemoveIndex]);
+            }
         }
 
         public void RemoveListCheck()
         {
             DateTime currentTime = DateTime.Now;
-            List<int> toRemoveListIndexes = new List<int>();
-            
+            List<Tag> toRemoveListIndexes = new List<Tag>();
+
             foreach (Tag t in removedTagList)
             {
                 TimeSpan timeSpan = currentTime - t.lastReadTime;
                 if (timeSpan.Seconds > 10)
-                {
-                    toRemoveListIndexes.Add(removedTagList.IndexOf(t));
-                }
+                    toRemoveListIndexes.Add(t);
             }
+
+            removedTagList.RemoveAll(t => toRemoveListIndexes.Contains(t));
             
-            foreach (int i in toRemoveListIndexes)
-            {
-                removedTagList.Remove(removedTagList[i]);
-            }
+        }
+
+        public void Write(bool writeID, Tag tag)
+        {
+            string newTagID = "00";
+
+            if (writeID)
+                newTagID = id + tag.id.Substring(2);
+
+            TagData newEPC = new TagData(newTagID);
+            reader.reader.WriteTag(null, newEPC);
         }
     }
 }

@@ -84,7 +84,7 @@ namespace TCPServer
                 }
 
                 
-                if (text == "<LOT1>")
+                if (text == "<LO1>")
                 {
                     //should happen based on a timer
                     try
@@ -116,7 +116,7 @@ namespace TCPServer
             {
                 Socket current = (Socket)ar.AsyncState;
                 current.EndSend(ar);
-                Console.WriteLine("Server sent msg");
+                AppendToTextBox("Server sent msg");
             }
             catch (Exception e)
             {

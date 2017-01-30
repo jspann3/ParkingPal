@@ -137,7 +137,7 @@ namespace SimpleAsyncSocket
         {
             try
             {
-                buffer = Encoding.ASCII.GetBytes("<LOT1>");
+                buffer = Encoding.ASCII.GetBytes("<LO1>");
                 clientSocket.BeginSend(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback(SendCallback), null);
                 buffer = new byte[clientSocket.ReceiveBufferSize];
                 clientSocket.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback(ReceiveCallback), null);

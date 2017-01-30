@@ -17,13 +17,9 @@ namespace TCPServer
 {
     public partial class Server : Form
     {
-        private Socket serverSocket, clientSocket;
+        private Socket serverSocket;
         private byte[] buffer;
         public static ManualResetEvent allDone = new ManualResetEvent(false);
-
-        // Testing Purposes
-        //public Lot lot1 = new Lot(0, new int[] { 0 }, 25);
-        //public Lot lot2 = new Lot(1, new int[] { 0, 1 }, 50);
 
         public Lot testLot;
 
@@ -32,7 +28,6 @@ namespace TCPServer
             string path = @"C:\Users\BronzeMoss\Documents\visual studio 2015\Projects\SimpleAsyncSocket\SimpleAsyncSocket\bin\Debug\TCPClient.exe";
             Process.Start(path);
             InitializeComponent();
-            //StartServer();
         }
 
         private void StartServer()
@@ -43,12 +38,8 @@ namespace TCPServer
                 serverSocket.Bind(new IPEndPoint(IPAddress.Any, 3335));
                 serverSocket.Listen(100);
                 testLot = new Lot("12", new int[] { 0 }, 35);
-                //while (true)
-                {
-                    allDone.Reset();
-                    serverSocket.BeginAccept(new AsyncCallback(AcceptCallback), null);
-                    //allDone.WaitOne();
-                }
+
+                serverSocket.BeginAccept(new AsyncCallback(AcceptCallback), null);
             }
             catch (Exception e)
             {
@@ -60,10 +51,9 @@ namespace TCPServer
         {
             try
             {
-                allDone.Set();
-                clientSocket = serverSocket.EndAccept(ar);
+                Socket clientSocket = serverSocket.EndAccept(ar);
                 buffer = new byte[clientSocket.ReceiveBufferSize];
-                clientSocket.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback(ReceiveCallback), null);
+                clientSocket.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback(ReceiveCallback), clientSocket);
                 serverSocket.BeginAccept(new AsyncCallback(AcceptCallback), null);
 
                 AppendToTextBox("Client has connected");
@@ -78,26 +68,19 @@ namespace TCPServer
         {
             try
             {
-                int received = clientSocket.EndReceive(ar);
+                Socket current = (Socket)ar.AsyncState;
+                int received = current.EndReceive(ar);
 
                 if (received == 0)  //client has disconnected
                     return;
 
                 Array.Resize(ref buffer, received);
                 string text = Encoding.ASCII.GetString(buffer);
-
-                if (text == "<EXIT>")
-                {
-                    clientSocket.Close();
-                    serverSocket.Close();
-                    Application.Exit();
-                }
-
                 
                 if (text == "<LOT>")
                 {
                     byte[] buffer = Encoding.ASCII.GetBytes(testLot.GetTagListLength().ToString());
-                    clientSocket.BeginSend(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback(SendCallback), null);
+                    current.BeginSend(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback(SendCallback), current);
                 }
 
                 
@@ -114,19 +97,12 @@ namespace TCPServer
                     }
 
                     byte[] buffer = Encoding.ASCII.GetBytes(testLot.GetRemovedTagListLength().ToString());
-                    clientSocket.BeginSend(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback(SendCallback), null);
+                    current.BeginSend(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback(SendCallback), current);
                 }
-                /*
-                if (text == "<LOT2>")
-                {
-                    byte[] buffer = Encoding.ASCII.GetBytes(lot2.GetTagListLength().ToString());
-                    clientSocket.BeginSend(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback(SendCallback), null);
-                }*/
 
-                Console.WriteLine("Client says " + text);
                 AppendToTextBox("Client says: " + text);
-                Array.Resize(ref buffer, clientSocket.ReceiveBufferSize);
-                clientSocket.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback(ReceiveCallback), null);
+                Array.Resize(ref buffer, current.ReceiveBufferSize);
+                current.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback(ReceiveCallback), current);
             }
             catch (Exception e)
             {
@@ -138,7 +114,8 @@ namespace TCPServer
         {
             try
             {
-                clientSocket.EndSend(ar);
+                Socket current = (Socket)ar.AsyncState;
+                current.EndSend(ar);
                 Console.WriteLine("Server sent msg");
             }
             catch (Exception e)

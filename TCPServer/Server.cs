@@ -25,7 +25,7 @@ namespace TCPServer
 
         public Server()
         {
-            string path = @"C:\Users\BronzeMoss\Documents\visual studio 2015\Projects\SimpleAsyncSocket\SimpleAsyncSocket\bin\Debug\TCPClient.exe";
+            string path = @"C:\Users\BronzeMoss\Source\Repos\ParkingPal\SimpleAsyncSocket\bin\Debug\TCPClient.exe";
             Process.Start(path);
             InitializeComponent();
         }

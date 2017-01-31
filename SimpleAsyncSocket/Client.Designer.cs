@@ -34,6 +34,7 @@
             this.btnLot = new System.Windows.Forms.Button();
             this.btnLot1 = new System.Windows.Forms.Button();
             this.btnLot2 = new System.Windows.Forms.Button();
+            this.btnLotNR = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnConnect
@@ -98,11 +99,22 @@
             this.btnLot2.UseVisualStyleBackColor = true;
             this.btnLot2.Click += new System.EventHandler(this.btnLot2_Click);
             // 
+            // btnLotNR
+            // 
+            this.btnLotNR.Location = new System.Drawing.Point(197, 104);
+            this.btnLotNR.Name = "btnLotNR";
+            this.btnLotNR.Size = new System.Drawing.Size(75, 23);
+            this.btnLotNR.TabIndex = 6;
+            this.btnLotNR.Text = "LotNR";
+            this.btnLotNR.UseVisualStyleBackColor = true;
+            this.btnLotNR.Click += new System.EventHandler(this.btnLotNR_Click);
+            // 
             // Client
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(284, 261);
+            this.Controls.Add(this.btnLotNR);
             this.Controls.Add(this.btnLot2);
             this.Controls.Add(this.btnLot1);
             this.Controls.Add(this.btnLot);
@@ -124,6 +136,7 @@
         private System.Windows.Forms.Button btnLot;
         private System.Windows.Forms.Button btnLot1;
         private System.Windows.Forms.Button btnLot2;
+        private System.Windows.Forms.Button btnLotNR;
     }
 }
 

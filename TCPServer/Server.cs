@@ -35,10 +35,11 @@ namespace TCPServer
         {
             try
             {
+                readLotNRs(@"C:\Users\BronzeMoss\Source\Repos\ParkingPal\TCPServer\Lots.txt");
                 serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                 serverSocket.Bind(new IPEndPoint(IPAddress.Any, 3335));
                 serverSocket.Listen(100);
-                testLot = new Lot("12", new int[] { 0 }, 35);
+                //testLot = new Lot("12", new int[] { 0 }, 35);
 
                 serverSocket.BeginAccept(new AsyncCallback(AcceptCallback), null);
             }
@@ -73,10 +74,11 @@ namespace TCPServer
                     }
                     else if (i == 2)
                         maxSpaces = int.Parse(col.Trim());
+                    i++;
                 }
-            }
-            LotNoReader lnr = new LotNoReader(id, colors, maxSpaces);
-            lotNoReaderList.Add(lnr);
+                LotNoReader lnr = new LotNoReader(id, colors, maxSpaces);
+                lotNoReaderList.Add(lnr);
+            }           
         }
 
         private void AcceptCallback(IAsyncResult ar)
@@ -130,6 +132,19 @@ namespace TCPServer
 
                     byte[] buffer = Encoding.ASCII.GetBytes(testLot.GetRemovedTagListLength().ToString());
                     current.BeginSend(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback(SendCallback), current);
+                }
+
+                if (text == "<LNR>")
+                {
+                    try
+                    {
+                        byte[] buffer = Encoding.ASCII.GetBytes(lotNoReaderList[1].maxSpaces.ToString());
+                        current.BeginSend(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback(SendCallback), current);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
                 }
 
                 AppendToTextBox("Client says: " + text);

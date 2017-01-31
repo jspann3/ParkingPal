@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -19,9 +20,9 @@ namespace TCPServer
     {
         private Socket serverSocket;
         private byte[] buffer;
-        public static ManualResetEvent allDone = new ManualResetEvent(false);
 
         public Lot testLot;
+        private List<LotNoReader> lotNoReaderList = new List<LotNoReader>();
 
         public Server()
         {
@@ -45,6 +46,37 @@ namespace TCPServer
             {
                 MessageBox.Show(e.Message, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void readLotNRs(string fileName)
+        {
+            string input = File.ReadAllText(fileName);
+
+            string id = "";
+            int[] colors = new int[0];
+            int maxSpaces = -1;
+            int i = 0;
+
+            foreach (var row in input.Split('\n'))
+            {
+                i = 0;
+                foreach (var col in row.Trim().Split(' '))
+                {
+                    if (i == 0)
+                        id = col.Trim().ToString();
+                    else if (i == 1)
+                    {
+                        string currColors = col.Trim().ToString();
+                        colors = new int[currColors.Length];
+                        for (int j = 0; j < colors.Length; j++)
+                            colors[j] = int.Parse(currColors[j].ToString());
+                    }
+                    else if (i == 2)
+                        maxSpaces = int.Parse(col.Trim());
+                }
+            }
+            LotNoReader lnr = new LotNoReader(id, colors, maxSpaces);
+            lotNoReaderList.Add(lnr);
         }
 
         private void AcceptCallback(IAsyncResult ar)

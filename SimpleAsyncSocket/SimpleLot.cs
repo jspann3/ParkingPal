@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TCPClient
 {
-    class SimpleLot
+    public class SimpleLot
     {
         public string id { get; }
         public string color { get; }

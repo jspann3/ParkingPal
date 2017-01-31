@@ -9,15 +9,19 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using TCPClient;
 
 namespace SimpleAsyncSocket
 {
     public partial class Client : Form
     {
         private Socket clientSocket;
+        public SimpleLot testLot;
+
         public Client()
         {
             InitializeComponent();
+            testLot = new SimpleLot("01", "red", 35);
         }
 
         private byte[] buffer;
@@ -152,10 +156,7 @@ namespace SimpleAsyncSocket
         {
             try
             {
-                buffer = Encoding.ASCII.GetBytes("<LOT2>");
-                clientSocket.BeginSend(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback(SendCallback), null);
-                buffer = new byte[clientSocket.ReceiveBufferSize];
-                clientSocket.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback(ReceiveCallback), null);
+                textBox.Text = testLot.spotsRemaining.ToString();
             }
             catch (Exception ex)
             {

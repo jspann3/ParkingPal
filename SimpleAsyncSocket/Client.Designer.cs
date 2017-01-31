@@ -94,7 +94,7 @@
             this.btnLot2.Name = "btnLot2";
             this.btnLot2.Size = new System.Drawing.Size(75, 23);
             this.btnLot2.TabIndex = 5;
-            this.btnLot2.Text = "Lot 2";
+            this.btnLot2.Text = "Simple Lot";
             this.btnLot2.UseVisualStyleBackColor = true;
             this.btnLot2.Click += new System.EventHandler(this.btnLot2_Click);
             // 

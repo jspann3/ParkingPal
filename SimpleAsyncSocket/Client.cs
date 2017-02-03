@@ -107,7 +107,7 @@ namespace SimpleAsyncSocket
             {
                 int received = clientSocket.EndReceive(ar);
 
-                
+
 
                 Array.Resize(ref buffer, received);
                 string text = Encoding.ASCII.GetString(buffer);
@@ -179,19 +179,25 @@ namespace SimpleAsyncSocket
             }
         }
 
-        private static List<SimpleLot> allLots;
-        private List<SimpleLot> currentLots = allLots;
+        private static List<SimpleLot> allLots = new List<SimpleLot> { new SimpleLot("01", new int[] { 0, 1 }, 20, "CURRIS"),
+                                                                       new SimpleLot("02", new int[] { 0, 2 }, 20, "DORMS"),
+                                                                       new SimpleLot("12", new int[] { 0, 1, 2 }, 20, "QUAD") };
+        private List<SimpleLot> currentLots;
 
         private void FilterLots(string proximity, int color)
         {
             List<SimpleLot> filterOut = new List<SimpleLot>();
 
-            if (proximity == "ALL" || color == 9)
-                currentLots = allLots;
+            //allLots = new List<SimpleLot> { new SimpleLot("01", new int[] { 0, 1 }, 20, "CURRIS"),
+             //                                                          new SimpleLot("02", new int[] { 0, 2 }, 20, "DORMS"),
+              //                                                         new SimpleLot("12", new int[] { 0, 1, 2 }, 20, "QUAD") };
 
-            bool match = false;
+            //if (proximity == "ALL" || color == 9)
+            currentLots = new List<SimpleLot>(allLots);
+
             foreach (SimpleLot lot in currentLots)
             {
+                bool match = false;
                 if (proximity != "ALL")
                 {
                     if (lot.whichProximity != proximity)
@@ -201,7 +207,7 @@ namespace SimpleAsyncSocket
                     }
                 }
 
-                if (color != 9)
+                if (color != 0)
                 {
                     foreach(int c in lot.colors)
                     {
@@ -218,6 +224,15 @@ namespace SimpleAsyncSocket
             }
 
             currentLots.RemoveAll(lot => filterOut.Contains(lot));
+        }
+
+        private void btnFilter_Click(object sender, EventArgs e)
+        {
+            FilterLots(listBoxProximities.Text, listBoxColors.SelectedIndex);
+
+            txtResults.Clear();
+            foreach (SimpleLot lot in currentLots)
+                txtResults.AppendText(lot.id + "\n");
         }
     }
 }

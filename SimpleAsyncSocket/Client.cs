@@ -21,7 +21,7 @@ namespace SimpleAsyncSocket
         public Client()
         {
             InitializeComponent();
-            testLot = new SimpleLot("01", "red", 35);
+            testLot = new SimpleLot("01", new int[] { 1 }, 35, "Curris");
         }
 
         private byte[] buffer;
@@ -177,6 +177,47 @@ namespace SimpleAsyncSocket
             {
                 MessageBox.Show(ex.Message, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private static List<SimpleLot> allLots;
+        private List<SimpleLot> currentLots = allLots;
+
+        private void FilterLots(string proximity, int color)
+        {
+            List<SimpleLot> filterOut = new List<SimpleLot>();
+
+            if (proximity == "ALL" || color == 9)
+                currentLots = allLots;
+
+            bool match = false;
+            foreach (SimpleLot lot in currentLots)
+            {
+                if (proximity != "ALL")
+                {
+                    if (lot.whichProximity != proximity)
+                    {
+                        if (!filterOut.Contains(lot))
+                            filterOut.Add(lot);
+                    }
+                }
+
+                if (color != 9)
+                {
+                    foreach(int c in lot.colors)
+                    {
+                        if (c == color)
+                            match = true;
+                    }
+
+                    if (!match)
+                    {
+                        if (!filterOut.Contains(lot))
+                            filterOut.Add(lot);
+                    }
+                }
+            }
+
+            currentLots.RemoveAll(lot => filterOut.Contains(lot));
         }
     }
 }

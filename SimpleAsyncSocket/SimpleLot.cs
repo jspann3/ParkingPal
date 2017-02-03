@@ -9,14 +9,17 @@ namespace TCPClient
     public class SimpleLot
     {
         public string id { get; }
-        public string color { get; }
+        public int[] colors { get; }
         public int spotsRemaining { get; set; }
 
-        public SimpleLot(string ID, string Color, int SpotsRemaining)
+        public string whichProximity { get; }
+
+        public SimpleLot(string ID, int[] Colors, int SpotsRemaining, string WhichProximity)
         {
             id = ID;
-            color = Color;
+            colors = Colors;
             spotsRemaining = SpotsRemaining;
+            whichProximity = WhichProximity;
         }
     }
 }

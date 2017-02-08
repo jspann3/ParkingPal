@@ -8,7 +8,7 @@ namespace TCPServer
 {
     public class Tag
     {
-        public string id { get; }
+        public string id { get; set; }
         public int color { get; }
         public DateTime lastReadTime { get; }
 

@@ -39,7 +39,7 @@ namespace TCPServer
                 serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                 serverSocket.Bind(new IPEndPoint(IPAddress.Any, 3335));
                 serverSocket.Listen(100);
-                //testLot = new Lot("12", new int[] { 0 }, 35);
+                //testLot = new Lot("92", new int[] { 0 }, 35);
 
                 serverSocket.BeginAccept(new AsyncCallback(AcceptCallback), null);
             }
@@ -147,6 +147,19 @@ namespace TCPServer
                     }
                 }
 
+                if (text.StartsWith("<SEND>"))
+                {
+                    try
+                    {
+                        byte[] buffer = Encoding.ASCII.GetBytes(LotNumbersToReturn(text.Substring(6)));     //start after word <SEND>
+                        current.BeginSend(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback(SendCallback), current);
+                    }
+                    catch(Exception ex)
+                    {
+                        MessageBox.Show(ex.Message, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+
                 AppendToTextBox("Client says: " + text);
                 Array.Resize(ref buffer, current.ReceiveBufferSize);
                 current.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback(ReceiveCallback), current);
@@ -162,13 +175,34 @@ namespace TCPServer
             try
             {
                 Socket current = (Socket)ar.AsyncState;
-                current.EndSend(ar);
                 AppendToTextBox("Server sent msg");
+                current.EndSend(ar);
+                
             }
             catch (Exception e)
             {
                 MessageBox.Show(e.Message, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private string LotNumbersToReturn(string str)
+        {
+            string[] idsToSend = str.Split(' ');
+            List<string> lotNumberToSend = new List<string>();
+            foreach (String s in idsToSend)
+            {
+                foreach (LotNoReader lot in lotNoReaderList)
+                {
+                    if (s == lot.id)
+                        lotNumberToSend.Add(lot.maxSpaces.ToString());
+                }
+            }
+
+            string lotNumbersToReturn = "";
+            foreach (string lotNum in lotNumberToSend)
+                lotNumbersToReturn += lotNum + " ";
+
+            return lotNumbersToReturn;
         }
 
         private void btnStart_Click(object sender, EventArgs e)
@@ -184,6 +218,64 @@ namespace TCPServer
                 });
 
             this.Invoke(invoker);
+        }
+
+        private void ErrorCheck()
+        {
+            for (int i = 0; i < lotNoReaderList.Count - 1; i++)                 // Lot to check from
+            {
+                List<Tag> tagsToCheck = new List<Tag>();
+                List<LotNoReader> lotsToCheck = new List<LotNoReader>();
+
+                foreach (Tag checkFromTag in lotNoReaderList[i].tagList)        // Each Tag in (Lot to check from)
+                {
+                    for (int j = i + 1; j < lotNoReaderList.Count; j++)         // Lot to check
+                    {
+                        foreach (Tag checkTag in lotNoReaderList[j].tagList)    // Each Tag in (Lot to check)
+                        {
+                            if (checkTag.id == checkFromTag.id)
+                            {
+                                tagsToCheck.Add(checkTag);
+                                lotsToCheck.Add(lotNoReaderList[j]);
+                            }
+                        }
+                    }
+
+                    if (tagsToCheck.Count > 0)
+                    {
+                        lotsToCheck.Add(lotNoReaderList[i]);    // Add tag to check from to check list
+                        tagsToCheck.Add(checkFromTag);
+
+                        RemoveCheck(tagsToCheck, lotsToCheck);
+
+                        lotsToCheck.Clear();                    // Clear lists for next pass
+                        tagsToCheck.Clear();
+                    }
+                }
+            }
+        }
+
+        private void RemoveCheck(List<Tag> tList, List<LotNoReader> lList)
+        {
+            Tag latestTag = tList[0];
+            LotNoReader latestLot = lList[0];
+
+            for (int i = 0; i < tList.Count; i++)
+            {
+                if (tList[i].lastReadTime.CompareTo(latestTag.lastReadTime) > 0)  // > 0 means later
+                {
+                    latestTag = tList[i];
+                    latestLot = lList[i];
+                }
+            }
+
+            lList.Remove(latestLot);
+            tList.Remove(latestTag);
+
+            for (int i = 0; i < lList.Count; i++)
+            {
+                lList[i].tagList.Remove(latestTag); //may not work
+            }
         }
     }
 }

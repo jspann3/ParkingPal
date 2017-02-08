@@ -12,7 +12,7 @@ namespace TCPServer
 {
     public class USBReader
     {
-        public Reader reader;
+        public Reader actualReader;
 
         public static ArrayList ids = new ArrayList();
         public static ArrayList dts = new ArrayList();
@@ -23,11 +23,11 @@ namespace TCPServer
         public USBReader(Lot Lot)
         {
             lot = Lot;
-            reader = create();
-            connect(reader);
-            setROOP(reader);
+            actualReader = create();
+            connect(actualReader);
+            setROOP(actualReader);
             //filter(reader);
-            asyncRead(reader);
+            asyncRead(actualReader);
         }
 
         public ArrayList getEPC()

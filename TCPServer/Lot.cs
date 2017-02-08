@@ -43,9 +43,15 @@ namespace TCPServer
         }
 
         public void AddTag(Tag tag)
-        {
+        {           
+            Write(true, tag);
             tagList.Add(tag);
-            //Write(true, tag);
+        }
+
+        public void RemoveTag(Tag tag)
+        {
+            Write(false, tag);
+            tagList.Remove(tag);
         }
 
         public void TagRead(Tag tag)
@@ -82,10 +88,7 @@ namespace TCPServer
                 AddTag(tag);
 
             if (removeTag)
-            {
-                //Write(false,tagList[tagToRemoveIndex]);
-                tagList.Remove(tagList[tagToRemoveIndex]);
-            }
+                RemoveTag(tagList[tagToRemoveIndex]);
         }
 
         public void RemoveListCheck()
@@ -109,10 +112,30 @@ namespace TCPServer
             string newTagID = "00";
 
             if (writeID)
-                newTagID = id + tag.id.Substring(2);
+                newTagID = id;
 
-            TagData newEPC = new TagData(newTagID);
-            reader.reader.WriteTag(null, newEPC);
+            foreach (Tag t in tagList)
+            {
+                if (t.id == tag.id)
+                    t.id = newTagID + tag.id.Substring(2);
+            }
+            foreach (Tag t in removedTagList)
+            {
+                if (t.id == tag.id)
+                    t.id = newTagID + tag.id.Substring(2);
+            }
+
+            TagData newEPC = new TagData(newTagID + tag.id.Substring(2));
+            try
+            {
+                reader.actualReader.WriteTag(null, newEPC);
+            }
+            catch
+            {
+                Console.WriteLine("===========");
+                Console.WriteLine("ERROR FOUND");
+                Console.WriteLine("===========");
+            }
         }
     }
 }

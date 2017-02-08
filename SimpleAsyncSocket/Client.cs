@@ -7,6 +7,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TCPClient;
@@ -107,8 +108,6 @@ namespace SimpleAsyncSocket
             {
                 int received = clientSocket.EndReceive(ar);
 
-
-
                 Array.Resize(ref buffer, received);
                 string text = Encoding.ASCII.GetString(buffer);
 
@@ -179,20 +178,17 @@ namespace SimpleAsyncSocket
             }
         }
 
-        private static List<SimpleLot> allLots = new List<SimpleLot> { new SimpleLot("01", new int[] { 0, 1 }, 20, "CURRIS"),
-                                                                       new SimpleLot("02", new int[] { 0, 2 }, 20, "DORMS"),
-                                                                       new SimpleLot("12", new int[] { 0, 1, 2 }, 20, "QUAD") };
+        private static List<SimpleLot> allLots = new List<SimpleLot> { new SimpleLot("01", new int[] { 0, 1 }, 79, "QUAD"),
+                                                                       new SimpleLot("02", new int[] { 0, 1, 2 }, 241, "QUAD"),
+                                                                       new SimpleLot("03", new int[] { 0, 2 }, 177, "QUAD"),
+                                                                       new SimpleLot("04", new int[] { 0, 1 }, 19, "QUAD"),
+                                                                       new SimpleLot("05", new int[] { 0, 1, 2, 3 }, 260, "CURRIS"),
+                                                                       new SimpleLot("06", new int[] { 0, 2, 3 }, 249, "DORMS") };
         private List<SimpleLot> currentLots;
 
         private void FilterLots(string proximity, int color)
         {
             List<SimpleLot> filterOut = new List<SimpleLot>();
-
-            //allLots = new List<SimpleLot> { new SimpleLot("01", new int[] { 0, 1 }, 20, "CURRIS"),
-             //                                                          new SimpleLot("02", new int[] { 0, 2 }, 20, "DORMS"),
-              //                                                         new SimpleLot("12", new int[] { 0, 1, 2 }, 20, "QUAD") };
-
-            //if (proximity == "ALL" || color == 9)
             currentLots = new List<SimpleLot>(allLots);
 
             foreach (SimpleLot lot in currentLots)
@@ -226,9 +222,31 @@ namespace SimpleAsyncSocket
             currentLots.RemoveAll(lot => filterOut.Contains(lot));
         }
 
+        private string ConvertLotIDsToString(List<SimpleLot> lots)
+        {
+            string lotIDs = "";
+
+            foreach (SimpleLot lot in lots)
+                lotIDs += lot.id + " ";     //create space-separated string of IDs
+
+            return lotIDs;
+        }
+
         private void btnFilter_Click(object sender, EventArgs e)
         {
             FilterLots(listBoxProximities.Text, listBoxColors.SelectedIndex);
+
+            try
+            {
+                buffer = Encoding.ASCII.GetBytes("<SEND>" + ConvertLotIDsToString(currentLots));
+                clientSocket.BeginSend(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback(SendCallback), null);
+                buffer = new byte[clientSocket.ReceiveBufferSize];
+                clientSocket.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback(ReceiveCallback), null);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
 
             txtResults.Clear();
             foreach (SimpleLot lot in currentLots)

@@ -30,6 +30,8 @@
         {
             this.textBox = new System.Windows.Forms.TextBox();
             this.btnStart = new System.Windows.Forms.Button();
+            this.btnFillTestLots = new System.Windows.Forms.Button();
+            this.btnErrorChk = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // textBox
@@ -57,11 +59,33 @@
             this.btnStart.UseVisualStyleBackColor = true;
             this.btnStart.Click += new System.EventHandler(this.btnStart_Click);
             // 
+            // btnFillTestLots
+            // 
+            this.btnFillTestLots.Location = new System.Drawing.Point(13, 223);
+            this.btnFillTestLots.Name = "btnFillTestLots";
+            this.btnFillTestLots.Size = new System.Drawing.Size(75, 23);
+            this.btnFillTestLots.TabIndex = 2;
+            this.btnFillTestLots.Text = "Fill Test Lots";
+            this.btnFillTestLots.UseVisualStyleBackColor = true;
+            this.btnFillTestLots.Click += new System.EventHandler(this.btnFillTestLots_Click);
+            // 
+            // btnErrorChk
+            // 
+            this.btnErrorChk.Location = new System.Drawing.Point(95, 222);
+            this.btnErrorChk.Name = "btnErrorChk";
+            this.btnErrorChk.Size = new System.Drawing.Size(96, 23);
+            this.btnErrorChk.TabIndex = 3;
+            this.btnErrorChk.Text = "Run Error Check";
+            this.btnErrorChk.UseVisualStyleBackColor = true;
+            this.btnErrorChk.Click += new System.EventHandler(this.btnErrorChk_Click);
+            // 
             // Server
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(284, 258);
+            this.Controls.Add(this.btnErrorChk);
+            this.Controls.Add(this.btnFillTestLots);
             this.Controls.Add(this.btnStart);
             this.Controls.Add(this.textBox);
             this.Name = "Server";
@@ -75,6 +99,8 @@
 
         private System.Windows.Forms.TextBox textBox;
         private System.Windows.Forms.Button btnStart;
+        private System.Windows.Forms.Button btnFillTestLots;
+        private System.Windows.Forms.Button btnErrorChk;
     }
 }
 

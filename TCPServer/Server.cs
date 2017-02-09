@@ -35,7 +35,7 @@ namespace TCPServer
         {
             try
             {
-                readLotNRs(@"C:\Users\BronzeMoss\Source\Repos\ParkingPal\TCPServer\Lots.txt");
+                //readLotNRs(@"C:\Users\BronzeMoss\Source\Repos\ParkingPal\TCPServer\Lots.txt");
                 serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                 serverSocket.Bind(new IPEndPoint(IPAddress.Any, 3335));
                 serverSocket.Listen(100);
@@ -253,6 +253,9 @@ namespace TCPServer
                     }
                 }
             }
+
+            foreach (LotNoReader lot in lotNoReaderList)
+                lot.tagList.RemoveAll(tag => tag.flagged);
         }
 
         private void RemoveCheck(List<Tag> tList, List<LotNoReader> lList)
@@ -272,10 +275,51 @@ namespace TCPServer
             lList.Remove(latestLot);
             tList.Remove(latestTag);
 
-            for (int i = 0; i < lList.Count; i++)
+            for (int i = 0; i < lotNoReaderList.Count; i++)
             {
-                lList[i].tagList.Remove(latestTag); //may not work
+                for (int j = 0; j < lList.Count; j++)
+                {
+                    if (lList[j].id == lotNoReaderList[i].id)
+                    {
+                        foreach (Tag t in lotNoReaderList[i].tagList)
+                        {
+                            if (t.id == latestTag.id)
+                            {
+                                t.flagged = true;
+                            }
+                        }
+                    }
+                }
             }
+        }
+
+        private void FillTestLots()
+        {
+            int index = 0;
+            DateTime time = DateTime.Now;
+            for (int lot = 0; lot < 50; lot++)
+            {               
+                LotNoReader currLot = new LotNoReader(lot.ToString(), new int[0], 200);
+
+                for (int tag = index; tag < index + 200; tag++)
+                {
+                    currLot.tagList.Add(new Tag(tag.ToString(), 0, time));
+                    time = time.AddSeconds(10);
+                }
+
+                lotNoReaderList.Add(currLot);
+                index += 175;
+            }            
+        }
+
+        private void btnFillTestLots_Click(object sender, EventArgs e)
+        {
+            FillTestLots();
+        }
+
+        private void btnErrorChk_Click(object sender, EventArgs e)
+        {
+            ErrorCheck();
         }
     }
 }

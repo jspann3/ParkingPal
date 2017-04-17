@@ -53,7 +53,6 @@ namespace SimpleAsyncSocket
 
         private void ConnectCallback(IAsyncResult ar)
         {
-            int i = 0;
             try
             {
                 clientSocket.EndConnect(ar);

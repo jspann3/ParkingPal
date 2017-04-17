@@ -27,7 +27,7 @@ namespace TCPServer
         public Server()
         {
             string path = @"C:\Users\BronzeMoss\Source\Repos\ParkingPal\SimpleAsyncSocket\bin\Debug\TCPClient.exe";
-            Process.Start(path);
+            //Process.Start(path);
             InitializeComponent();
         }
 
@@ -151,7 +151,9 @@ namespace TCPServer
                 {
                     try
                     {
-                        byte[] buffer = Encoding.ASCII.GetBytes(LotNumbersToReturn(text.Substring(6)));     //start after word <SEND>
+                        text = text.Substring(6);
+                        string numsToSend = LotNumbersToReturn(text);
+                        byte[] buffer = Encoding.ASCII.GetBytes(numsToSend);     //start after word <SEND>
                         current.BeginSend(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback(SendCallback), current);
                     }
                     catch(Exception ex)
@@ -194,7 +196,7 @@ namespace TCPServer
                 foreach (LotNoReader lot in lotNoReaderList)
                 {
                     if (s == lot.id)
-                        lotNumberToSend.Add(lot.maxSpaces.ToString());
+                        lotNumberToSend.Add(lot.tagList.Count.ToString());
                 }
             }
 
@@ -222,6 +224,7 @@ namespace TCPServer
 
         private void ErrorCheck()
         {
+            int totalNumChecks = 0;
             for (int i = 0; i < lotNoReaderList.Count - 1; i++)                 // Lot to check from
             {
                 List<Tag> tagsToCheck = new List<Tag>();
@@ -238,6 +241,7 @@ namespace TCPServer
                                 tagsToCheck.Add(checkTag);
                                 lotsToCheck.Add(lotNoReaderList[j]);
                             }
+                            totalNumChecks++;
                         }
                     }
 
@@ -255,7 +259,9 @@ namespace TCPServer
             }
 
             foreach (LotNoReader lot in lotNoReaderList)
-                lot.tagList.RemoveAll(tag => tag.flagged);
+                lot.RemoveTags();
+
+            Console.WriteLine("Total Number of Checks: " + totalNumChecks);
         }
 
         private void RemoveCheck(List<Tag> tList, List<LotNoReader> lList)
@@ -299,11 +305,11 @@ namespace TCPServer
             DateTime time = DateTime.Now;
             for (int lot = 0; lot < 50; lot++)
             {               
-                LotNoReader currLot = new LotNoReader(lot.ToString(), new int[0], 200);
+                LotNoReader currLot = new LotNoReader(lot.ToString(), new int[] { 0 }, 200);
 
                 for (int tag = index; tag < index + 200; tag++)
                 {
-                    currLot.tagList.Add(new Tag(tag.ToString(), 0, time));
+                    currLot.AddTag(new Tag(tag.ToString(), 0, time));
                     time = time.AddSeconds(10);
                 }
 

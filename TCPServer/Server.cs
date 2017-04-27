@@ -22,6 +22,7 @@ namespace TCPServer
         private byte[] buffer;
 
         public Lot testLot;
+        private Lot demoLot;
         private List<LotNoReader> lotNoReaderList = new List<LotNoReader>();
 
         public Server()
@@ -40,6 +41,7 @@ namespace TCPServer
                 serverSocket.Bind(new IPEndPoint(IPAddress.Any, 3335));
                 serverSocket.Listen(100);
                 //testLot = new Lot("92", new int[] { 0 }, 35);
+                demoLot = new Lot("10", new int[] { 0, 1 }, 25);
 
                 serverSocket.BeginAccept(new AsyncCallback(AcceptCallback), null);
             }
@@ -157,6 +159,21 @@ namespace TCPServer
                         current.BeginSend(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback(SendCallback), current);
                     }
                     catch(Exception ex)
+                    {
+                        MessageBox.Show(ex.Message, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+
+                if (text.StartsWith("<DEMO>"))
+                {
+                    try
+                    {
+                        demoLot.RemoveListCheck();
+                        text = text.Substring(6);
+                        byte[] buffer = Encoding.ASCII.GetBytes(demoLot.GetTagListLength().ToString());
+                        current.BeginSend(buffer, 0, buffer.Length, SocketFlags.None, new AsyncCallback(SendCallback), current);
+                    }
+                    catch (Exception ex)
                     {
                         MessageBox.Show(ex.Message, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }

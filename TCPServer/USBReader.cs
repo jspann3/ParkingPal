@@ -38,7 +38,7 @@ namespace TCPServer
         public Reader create()
         {
             //create the Reader object
-            string uri = "eapi:///com3";
+            string uri = "eapi:///com4";
             Reader reader = Reader.Create(uri);
 
             return reader;
@@ -85,9 +85,7 @@ namespace TCPServer
                 Convert.ToInt32(dt.Substring(14, 2)), Convert.ToInt32(dt.Substring(17, 2)), Convert.ToInt32(dt.Substring(20, 3)));
 
             Tag tag = new Tag(id, 0, timeRead);
-            lot.TagRead(tag);
-
-            
+            lot.TagRead(tag);           
 
             string idANDdt = id + " " + dt;
 

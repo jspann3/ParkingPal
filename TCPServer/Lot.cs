@@ -44,13 +44,13 @@ namespace TCPServer
 
         public void AddTag(Tag tag)
         {           
-            Write(true, tag);
+            //Write(true, tag);
             tagList.Add(tag);
         }
 
         public void RemoveTag(Tag tag)
         {
-            Write(false, tag);
+            //Write(false, tag);
             tagList.Remove(tag);
         }
 
@@ -70,7 +70,7 @@ namespace TCPServer
                     addTag = false;
                     DateTime tagTime = t.lastReadTime;
                     TimeSpan timeSpan = currentTime - tagTime;
-                    if (timeSpan.Seconds > 5)
+                    if (timeSpan.Seconds > 3)
                     {
                         removeTag = true;
                         tagToRemoveIndex = tagList.IndexOf(t);
@@ -99,7 +99,7 @@ namespace TCPServer
             foreach (Tag t in removedTagList)
             {
                 TimeSpan timeSpan = currentTime - t.lastReadTime;
-                if (timeSpan.Seconds > 10)
+                if (timeSpan.Seconds > 3)
                     toRemoveListIndexes.Add(t);
             }
 
